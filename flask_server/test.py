@@ -5,7 +5,10 @@ import json
 
 # Replace the URL with the actual URL of your Flask API
 # http://127.0.0.1:5000
-api_url = 'http://127.0.0.1:5000/chat'
+
+# server = "http://127.0.0.1:5000/"
+server = "https://customwheelsapi.atharvapawar.repl.co/"
+api_url = f'{server}chat'
 
 # Sample data to send in the POST request
 data = {

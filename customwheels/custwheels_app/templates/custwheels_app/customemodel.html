@@ -1,31 +1,19 @@
 {% extends 'custwheels_app/base.html' %} {% block title %}CustomWheelz | Home{% endblock %}
 
 {% block css %}
-    .bg-custom-background {
-        background-image: url('https://images.freeimages.com/images/large-previews/c77/colourful-abstract-1172933.jpg');
-        background-size: cover; /* Optional: Adjust this to control the image size */
-        /* You can add more background properties as needed */
-    }         
     
-    input {
-    background: transparent;
-    }
-    input:active,
-    input:focus {
-    background: transparent;
-    outline: none;
-
-    }
 {% endblock %}
 
 <div>{% block content %} {% load static %}</div>
 
 
+<!-- <div class="bg-custom-background"> -->
 <div class="bg-custom-background">
     <div>
      <!-- Content Starts  -->
 
-        <div class="h-[40rem] bg-gray-500 opacity-90">
+        <!-- <div class="h-[40rem] bg-gray-500 opacity-90"> -->
+        <div class="h-[40rem]">
             <div>
                 <!-- <div class="text-center py-4 text-4xl uppercase font-bold font-mono text-black">Formless</div> -->
                 
@@ -33,10 +21,10 @@
 
                     <div class="flex justify-center full">
                         <div class="px-4 py-4 w-11/12  content-center h-[36rem] border rounded-xl shadow-2xl">
-                            <div class="text-gray-300 text-center text-xl font-bold font-mono mb-1">Formless Chat</div>
+                            <div class="text-green-600 text-center text-xl font-bold font-mono mb-1">Formless Chat</div>
                             <!-- <div class="text-gray-300 text-md font-bold col-span-3 h-[27rem]"> -->
 
-                            <div class="text-gray-300 text-md font-bold col-span-3 h-[27rem] overflow-y-auto mb-2 text-justify ">
+                            <div class="text-gray-500 text-md font-bold col-span-3 h-[27rem] overflow-y-auto mb-2 text-justify ">
 
                             <div>Welcome to CustomWheelz with formless tech, lets design your Dream Car...</div>
 
@@ -54,11 +42,11 @@
                                     <div class="grid grid-cols-10 gap-1">
                                         
                                         <div class="col-span-9">
-                                            <input class="text-gray-300 bg-none text-xl w-full border border-gray-300 rounded-l-lg p-1" type="text" name="input_text" placeholder="Type Here...">
+                                            <input class="text-gray-500 text-xl w-full bg-white border border-gray-300 rounded-l-lg p-1" type="text" name="input_text" placeholder="Type Here...">
                                         </div>
 
                                         <div>
-                                            <button type="submit" class="text-gray-300 border border-gray-300 py-1 pb-2 px-4 rounded-r-lg hover:bg-gray-400"><i class="fa-solid fa-paper-plane"></i></button>
+                                            <button type="submit" class="text-gray-600 border border-gray-300 py-1 pb-2 px-4 rounded-r-lg hover:bg-gray-200"><i class="fa-solid fa-paper-plane"></i></button>
                                         </div>
                                         
                                     </div>
@@ -72,7 +60,7 @@
                         <!-- render model -->
                         <div class="text-center text-xl font-bold font-mono mb-2 ">Model view</div>
 
-                        <canvas id="model-view" class="border bg-gray-300 p-1 rounded"></canvas> 
+                        <canvas id="model-view" class="border p-1 rounded"></canvas> 
     
     
                     </div>
@@ -86,67 +74,71 @@
     </div>
 
 
-    <script>
-        const canvas = document.getElementById("model-view");
-        const engine = new BABYLON.Engine(canvas, true);
-    
-        const createScene = function () {
-          const scene = new BABYLON.Scene(engine);
-          scene.clearColor = new BABYLON.Color4(0.5, 0.5, 0.5, 1.0);
-    
-            const camera = new BABYLON.ArcRotateCamera("camera", Math.PI / 2, Math.PI / 2, 20, new BABYLON.Vector3(0, 2, 2));
-            camera.alpha = Math.PI / 5; // Rotate the camera 45 degrees horizontally
-            camera.beta = Math.PI / 3; // Rotate the camera 45 degrees vertically
-            camera.radius = 12; // Zoom the camera out
-            camera.attachControl(canvas, true);
-            camera.panningAxis = new BABYLON.Vector3(0, 0, 0); // Disable panning
+    <!-- Babylon.js script -->
+<script>
+    const canvas = document.getElementById("model-view");
+    const engine = new BABYLON.Engine(canvas, true);
 
-          const light = new BABYLON.DirectionalLight("DirectionalLight", new BABYLON.Vector3(0, -1, 0), scene);
-    
-          BABYLON.SceneLoader.ImportMeshAsync("", "{% static 'formlessapp/modelfiles/maclaren-tire/tire.obj' %}", "").then((result) => {
-            const meshes = result.meshes;
-            const materials = result.materials;
-    
-            // List the model part names
-            const modelPartsList = document.getElementById("model-parts-list").querySelector("ul");
+    let selectedPart; // Variable to store the currently selected part
+
+    const createScene = function () {
+        const scene = new BABYLON.Scene(engine);
+
+        // Set the background color to very light gray
+        /* scene.clearColor = new BABYLON.Color4(0.95, 0.95, 0.95, 1.0);
+
+        // Yellow light
+        const yellowLight = new BABYLON.HemisphericLight("yellowLight", new BABYLON.Vector3(0, 1, 0), scene);
+        yellowLight.intensity = 0.8;
+        yellowLight.diffuse = new BABYLON.Color3(1.0, 1.0, 0.7); // Yellow tint
+
+        // Blue light
+        const blueLight = new BABYLON.DirectionalLight("blueLight", new BABYLON.Vector3(-1, -2, -1), scene);
+        blueLight.position = new BABYLON.Vector3(20, 40, 20);
+        blueLight.intensity = 0.5;
+        blueLight.diffuse = new BABYLON.Color3(0.5, 0.7, 1.0); // Blue tint
+
+        // White light
+        const whiteLight = new BABYLON.PointLight("whiteLight", new BABYLON.Vector3(5, 10, 5), scene);
+        whiteLight.intensity = 0.7;
+        whiteLight.diffuse = new BABYLON.Color3(1.0, 1.0, 1.0); // White tint
+*/
+        const camera = new BABYLON.ArcRotateCamera("camera", Math.PI / 2, Math.PI / 2, 20, new BABYLON.Vector3(0, 2, 2));
+        camera.alpha = Math.PI / 5;
+        camera.beta = Math.PI / 3;
+        camera.radius = 12;
+        camera.attachControl(canvas, true);
+        camera.panningAxis = new BABYLON.Vector3(0, 0, 0);
+
+        // Load the model
+
+
+        BABYLON.SceneLoader.ImportMesh("", "{% static 'custwheels_app/model_file/model.glb' %}", "",scene,function(meshes) {
+            //const meshes = result.meshes;
+            // Find the mesh with material named "Mt_Body" and change its color to blue
             meshes.forEach((mesh) => {
-              modelPartsList.innerHTML += `<li>${mesh.name}</li>`;
+                if (mesh.material && mesh.material.name === "Mt_Body") {
+                    console.log("Nice");
+                    mesh.material.albedoColor = new BABYLON.Color3(0, 1, 0); // Set the color to red
+
+                    //mesh.material.diffuseColor = new BABYLON.Color3(0.0, 1.0, 1.0); // Blue color
+                }
             });
-    
-            // Change the model part color to red when selected
-            meshes.forEach((mesh) => {
-              mesh.actionManager = new BABYLON.ActionManager(scene);
-              mesh.actionManager.registerAction(
-                new BABYLON.ExecuteCodeAction(
-                  BABYLON.ActionManager.OnPickTrigger,
-                  function () {
-                    if (selectedPart) {
-                      // Reset the color of the previously selected part
-                      selectedPart.material.diffuseColor = new BABYLON.Color3(1, 1, 1);
-                    }
-                    // Set the color of the selected part to red
-                    mesh.material.diffuseColor = new BABYLON.Color3(1, 0, 0);
-                    selectedPart = mesh; // Update the selected part
-                  }
-                )
-              );
-            });
-          });
-    
-          return scene;
-        };
-    
-        const scene = createScene();
-    
-        engine.runRenderLoop(function () {
-          scene.render();
         });
-    
-        window.addEventListener("resize", function () {
-          engine.resize();
-        });
-      </script>
-   
+
+        return scene;
+    };
+
+    const scene = createScene();
+
+    engine.runRenderLoop(function () {
+        scene.render();
+    });
+
+    window.addEventListener("resize", function () {
+        engine.resize();
+    });
+</script>
 
 </div>
 

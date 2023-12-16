@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+    <!-- Cloud CDNs -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
+    <!-- 3D model -->
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+    <script src="https://code.jquery.com/pep/0.4.3/pep.js"></script>
+
+    <!-- Local Files -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="{% static 'custwheels_app\setup\daisyui.css' %}" rel="stylesheet" type="text/css" />
+
+    <style>
+        html,
+        body {
+          overflow: hidden;
+          width: 100%;
+          height: 100%;
+          margin: 0;
+          padding: 0;
+        }
+        #model-view {
+          width: 100%;
+          height: 84%;
+          touch-action: none;
+        }
+    </style>
+
+</head>
+
+<body class="bg-white">
+    <!-- Navbar -->
+    <section class="grid grid-cols-6 h-12 border">
+        <a href="/" class=" font-mono font-bold text-3xl text-green-800 mx-auto py-2"><i>Custom Wheels</i></a>
+        <div></div>
+        <div></div>
+        <div></div>
+        <!-- {% if user.is_authenticated %}
+            <a href="{% url 'customemodel' %}" class="h-16 hidden">
+                <div
+                    class="text-xl py-3 h-12 font-bold text-center text-green-500 hover:text-green-900 hover:bg-green-100"
+                >
+                    Create Model
+                </div>
+            </a>
+            <a href="{% url 'user_logout' %}" class="col-span-2">
+                <div
+                    class="text-xl py-3 h-12 font-bold text-center text-green-500 hover:text-green-900 hover:bg-green-100"
+                >
+                    <i class="fa-solid fa-user"></i> {{ user.username }}
+                    <i class="fa-solid fa-right-from-bracket ml-2"></i>
+                </div>
+            </a>
+        {% else %}
+            <div></div>
+            <div></div>
+            <a href="{% url 'user_login' %}">
+            <div
+                class="text-xl py-1 h-12 font-bold text-center text-green-500 hover:text-green-900 hover:bg-green-100"
+            >
+                <i class="fa-solid fa-user"></i> Login
+            </div>
+            </a>
+        {% endif %} -->
+    </section>
+
+
+    
+    
+    <!-- <div class="bg-custom-background"> -->
+    <div class="bg-custom-background">
+        <div>
+         <!-- Content Starts  -->
+    
+            <!-- <div class="h-[40rem] bg-gray-500 opacity-90"> -->
+            <div class="h-[40rem]">
+                <div>
+                    <!-- <div class="text-center py-4 text-4xl uppercase font-bold font-mono text-black">Formless</div> -->
+                    
+                    <div class="grid grid-cols-3 py-4">
+    
+                        <div class="flex justify-center full">
+                            <div class="px-4 py-4 w-11/12  content-center h-[36rem] border rounded-xl shadow-2xl">
+                                <div class="text-green-600 text-center text-xl font-bold font-mono mb-1">Formless Chat</div>
+                                <!-- <div class="text-gray-300 text-md font-bold col-span-3 h-[27rem]"> -->
+    
+                                <div class="text-gray-500 text-md font-bold col-span-3 h-[27rem] overflow-y-auto mb-2 text-justify ">
+    
+                                <div>Welcome to CustomWheelz with formless tech, lets design your Dream Car...</div>
+    
+                                <!-- {% for chat_item in chatList %} -->
+                                    <!-- <div>{{ chat_item }}</div> -->
+                                <!-- {% endfor %} -->
+    
+                                     
+                                </div>
+                                
+                                <div class="h-10 ">
+                                    <!-- <input class="mt-10 text-white bg-none text-2xl" type="text" placeholder="Type Here..."> -->
+                                    <form method="post" action="{% url 'chat_view' %}">
+                                        <!-- {% csrf_token %} -->
+                                        <div class="grid grid-cols-10 gap-1">
+                                            
+                                            <div class="col-span-9">
+                                                <input class="text-gray-500 text-xl w-full bg-white border border-gray-300 rounded-l-lg p-1" type="text" name="input_text" placeholder="Type Here...">
+                                            </div>
+    
+                                            <div>
+                                                <button type="submit" class="text-gray-600 border border-gray-300 py-1 pb-2 px-4 rounded-r-lg hover:bg-gray-200"><i class="fa-solid fa-paper-plane"></i></button>
+                                            </div>
+                                            
+                                        </div>
+                                    </form>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="col-span-2 text-center border mr-4 rounded-lg px-4 py-4 full">
+                            <!-- render model -->
+                            <div class="text-center text-xl font-bold font-mono mb-2 ">Model view</div>
+    
+                            <canvas id="model-view" class="border p-1 rounded"></canvas> 
+        
+        
+                        </div>
+                        
+    
+                    </div>
+                </div>
+            </div> 
+    
+         <!-- Content ENDS  -->
+        </div>
+    
+    
+        <!-- Babylon.js script -->
+    <script>
+        const canvas = document.getElementById("model-view");
+        const engine = new BABYLON.Engine(canvas, true);
+    
+        let selectedPart; // Variable to store the currently selected part
+    
+        const createScene = function () {
+            const scene = new BABYLON.Scene(engine);
+    
+            // Set the background color to very light gray
+            /* scene.clearColor = new BABYLON.Color4(0.95, 0.95, 0.95, 1.0);
+    
+            // Yellow light
+            const yellowLight = new BABYLON.HemisphericLight("yellowLight", new BABYLON.Vector3(0, 1, 0), scene);
+            yellowLight.intensity = 0.8;
+            yellowLight.diffuse = new BABYLON.Color3(1.0, 1.0, 0.7); // Yellow tint
+    
+            // Blue light
+            const blueLight = new BABYLON.DirectionalLight("blueLight", new BABYLON.Vector3(-1, -2, -1), scene);
+            blueLight.position = new BABYLON.Vector3(20, 40, 20);
+            blueLight.intensity = 0.5;
+            blueLight.diffuse = new BABYLON.Color3(0.5, 0.7, 1.0); // Blue tint
+    
+            // White light
+            const whiteLight = new BABYLON.PointLight("whiteLight", new BABYLON.Vector3(5, 10, 5), scene);
+            whiteLight.intensity = 0.7;
+            whiteLight.diffuse = new BABYLON.Color3(1.0, 1.0, 1.0); // White tint
+    */
+            const camera = new BABYLON.ArcRotateCamera("camera", Math.PI / 2, Math.PI / 2, 20, new BABYLON.Vector3(0, 2, 2));
+            camera.alpha = Math.PI / 5;
+            camera.beta = Math.PI / 3;
+            camera.radius = 12;
+            camera.attachControl(canvas, true);
+            camera.panningAxis = new BABYLON.Vector3(0, 0, 0);
+    
+            // Load the model
+    
+    
+            BABYLON.SceneLoader.ImportMesh("", "custwheels_app/model_file/model.glb", "",scene,function(meshes) {
+                //const meshes = result.meshes;
+                // Find the mesh with material named "Mt_Body" and change its color to blue
+                meshes.forEach((mesh) => {
+                    if (mesh.material && mesh.material.name === "Mt_Body") {
+                        console.log("Nice");
+                        mesh.material.albedoColor = new BABYLON.Color3(0, 1, 0); // Set the color to red
+    
+                        //mesh.material.diffuseColor = new BABYLON.Color3(0.0, 1.0, 1.0); // Blue color
+                    }
+                });
+            });
+    
+            return scene;
+        };
+    
+        const scene = createScene();
+    
+        engine.runRenderLoop(function () {
+            scene.render();
+        });
+    
+        window.addEventListener("resize", function () {
+            engine.resize();
+        });
+    </script>
+    
+    </div>
+    
+    
+
+
+
+</body>
+
+</html>

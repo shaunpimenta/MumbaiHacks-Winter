@@ -25,15 +25,31 @@ def index(request):
 def select_model(request):
     return render(request,'custwheels_app/select_model.html')
 
+
 def customemodel(request):
     return render(request,'custwheels_app/customemodel.html')
 
+'''
+def llm_MODEL(input_text):
+    #model code...
+
+    
+
+    jsonData = {
+        "item" : "spoiler",
+        "color": "red", # / #hg34vvh
+        "type" : "type_1",
+        "chat_response" : "uysefj",
+    }
+    return jsonData
 
 def test(request):
-    return render(request,'custwheels_app/loadobjModel.html')
 
-def help(request):
-    return render(request,'custwheels_app/help.html')
+    return render(request,'custwheels_app/loadobjModel.html')
+'''
+
+# def help(request):
+#     return render(request,'custwheels_app/help.html')
 
 
 @csrf_exempt  # To disable CSRF protection (not recommended for production)
@@ -51,7 +67,7 @@ def chat_view(request):
     return render(request,'custwheels_app/customemodel.html', params)
 
 
-
+# ------------------------------ Login Controls ------------------------------ 
 
 def user_register(request):
     if request.method == 'POST':
@@ -69,7 +85,7 @@ def user_register(request):
     else:
         error_message = None
 
-    return render(request, 'agroapp/register.html', {'error_message': error_message})
+    return render(request, 'custwheels_app/register.html', {'error_message': error_message})
 
 
 
@@ -80,13 +96,13 @@ def user_login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('viewNodes')  # Redirect to your dashboard view
+            return redirect('select_model')  # Redirect to your dashboard view
         else:
             error_message = 'Invalid username or password'
     else:
         error_message = None
 
-    return render(request, 'agroapp/login.html', {'error_message': error_message})
+    return render(request, 'custwheels_app/login.html', {'error_message': error_message})
 
 
 

@@ -10,8 +10,13 @@ urlpatterns = [
 
     path("customemodel", views.customemodel, name="customemodel"),
 
-    path("test", views.test, name="test"),
-    path("help", views.help, name="help"),
+    # path("test", views.test, name="test"),
+    # path("help", views.help, name="help"),
+
+    path('user_login/',      views.user_login,     name='user_login'),
+    path('user_logout/',     views.user_logout,    name='user_logout'),
+    path('user_register/',   views.user_register,  name='user_register'),
+
 
     # path("business", views.business, name="Business"),
     # path("about/", views.about, name="AboutUs"),

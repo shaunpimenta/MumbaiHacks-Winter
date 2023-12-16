@@ -15,7 +15,6 @@
     <title>Custom Wheels</title>
 </head>
 <body>
-    
     <!-- Navbar -->
     <section class="grid grid-cols-6 h-12 border">
         <a href="/" class=" font-mono font-bold text-3xl text-green-800 mx-auto py-2"><i>Custom Wheels</i></a>
@@ -51,8 +50,15 @@
     </section>
 
     <!-- Hero -->
-    <section class="px-10 py-10">
-        hero
+    <section class="px-10">
+        <div class="grid grid-cols-2 gap-10 my-10">
+            <a href="{% url 'customemodel' %}" class="border rounded-xl shadow-sm hover:shadow-xl">
+                <div class="p-20 text-2xl font-bold text-center">Car Model</div>
+            </a>
+            <a href="#" class="border rounded-xl shadow-sm hover:shadow-xl">
+                <div class="p-20 text-2xl font-bold text-center">Bike Model</div>
+            </a>
+        </div>
     </section>
 
 </body>

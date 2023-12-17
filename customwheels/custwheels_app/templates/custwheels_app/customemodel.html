@@ -31,12 +31,10 @@
 <div class="bg-custom-background">
     <div>
      <!-- Content Starts  -->
-
         <!-- <div class="h-[40rem] bg-gray-500 opacity-90"> -->
         <div class="h-[40rem]">
             <div>
                 <!-- <div class="text-center py-4 text-4xl uppercase font-bold font-mono text-black">Formless</div> -->
-                
                 <div class="grid grid-cols-3 py-4">
 
                     <div class="flex justify-center full">
@@ -46,16 +44,16 @@
                             </div>
                             <!-- <div class="text-gray-300 text-md font-bold col-span-3 h-[27rem]"> -->
 
-                            <div class="text-gray-500 text-md col-span-3 h-[27rem] overflow-y-auto mb-2 text-justify" id="chat-container">
+                            <div class="text-gray-300 text-md col-span-3 h-[27rem] overflow-y-auto mb-2 text-justify" id="chat-container">
 
                                 <div class="mr-4">Welcome to CustomWheelz with formless tech, let's design your Dream Car...</div>
                             
                             
                                 {% for chat_item in chatList %}
                                     {% if forloop.counter|divisibleby:2 %}
-                                        <div class="text-gray-800 bg-gray-100 p-2 mr-4 rounded-xl">Bot: {{ chat_item|safe }}</div> 
+                                        <div class="text-gray-600 bg-gray-100 p-2 mr-4 rounded-xl">Bot: {{ chat_item|safe }}</div> 
                                     {% else %}
-                                        <div class="text-gray-500 mr-6 my-2">{{ chat_item }}</div>
+                                        <div class="text-gray-300 mr-6 my-2">{{ chat_item }}</div>
                                     {% endif %}
 
                                     {% if forloop.last %}
@@ -104,11 +102,11 @@
                                     <div class="grid grid-cols-10 gap-1">
                                         
                                         <div class="col-span-9">
-                                            <input class="text-gray-500 text-xl w-full bg-white border border-gray-300 rounded-l-lg p-1" type="text" name="input_text" placeholder="Type Here...">
+                                            <input class="text-gray-500 text-xl w-full bg-gray-200 border border-gray-300 rounded-l-lg p-1" type="text" name="input_text" placeholder="Type Here...">
                                         </div>
 
                                         <div>
-                                            <button type="submit" class="text-gray-600 border border-gray-300 py-1 pb-2 px-4 rounded-r-lg hover:bg-gray-200"><i class="fa-solid fa-paper-plane"></i></button>
+                                            <button type="submit" class="border border-gray-300 py-1 pb-2 px-4 rounded-r-lg hover:bg-gray-200 hover:text-gray-600 text-gray-100"><i class="fa-solid fa-paper-plane"></i></button>
                                         </div>
                                         
                                     </div>
@@ -140,11 +138,32 @@
 <script>
     const canvas = document.getElementById("model-view");
     const engine = new BABYLON.Engine(canvas, true);
-
     let selectedPart; // Variable to store the currently selected part
 
     const createScene = function () {
         const scene = new BABYLON.Scene(engine);
+
+        const bigLight = new BABYLON.PointLight("bigLight", new BABYLON.Vector3(0, 45, 2), scene);
+
+        bigLight.intensity = 10000;
+        bigLight.shadowMapEnabled = true;
+
+        scene.clearColor = new BABYLON.Color3(0, 0, 0);
+        scene.ambientColor = new BABYLON.Color3(0.1, 0.1, 0.1); // Slightly reduce ambient light
+        const bigLight2 = new BABYLON.PointLight("bigLight2", new BABYLON.Vector3(3, 2, 15), scene);
+        bigLight2.intensity = 500;
+        bigLight2.shadowMapEnabled = false;
+
+        const bigLight3 = new BABYLON.PointLight("bigLight3", new BABYLON.Vector3(3, 2, -15), scene);
+        bigLight3.intensity = 500;
+        bigLight3.shadowMapEnabled = false;
+        const bigLight4 = new BABYLON.PointLight("bigLight4", new BABYLON.Vector3(20, 4, 0), scene);
+        bigLight4.intensity = 300;
+        bigLight4.shadowMapEnabled = false;
+
+        const bigLight5 = new BABYLON.PointLight("bigLight5", new BABYLON.Vector3(-10, 4, 0), scene);
+        bigLight5.intensity = 500;
+        bigLight5.shadowMapEnabled = false;
 
         // Set the background color to very light gray
         /* scene.clearColor = new BABYLON.Color4(0.95, 0.95, 0.95, 1.0);
@@ -165,16 +184,100 @@
         whiteLight.intensity = 0.7;
         whiteLight.diffuse = new BABYLON.Color3(1.0, 1.0, 1.0); // White tint
 */
-        const camera = new BABYLON.ArcRotateCamera("camera", Math.PI / 2, Math.PI / 2, 20, new BABYLON.Vector3(0, 2, 2));
-        camera.alpha = Math.PI / 5;
-        camera.beta = Math.PI / 3;
-        camera.radius = 12;
-        camera.attachControl(canvas, true);
-        camera.panningAxis = new BABYLON.Vector3(0, 0, 0);
+
+
+
+        const centerPoint = new BABYLON.Vector3(0, 0, 0);
+
+        const camera = new BABYLON.ArcRotateCamera(
+            "camera",
+            Math.PI / 2,
+            Math.PI / 2,
+            20,
+            new BABYLON.Vector3(0, 2, 2)
+          );
+          camera.alpha = Math.PI / 5;
+          camera.beta = Math.PI / 3;
+          camera.radius = 12;
+          camera.attachControl(canvas, true);
+          camera.panningAxis = new BABYLON.Vector3(0, 0, 0);
+        
+        
+        
+          camera.target = centerPoint;
+        
+        // Set the camera target to the center point
+        //const camera = new BABYLON.ArcRotateCamera("camera", Math.PI / 2, Math.PI / 2, 20, new BABYLON.Vector3(14, 8, 8));
+        //camera.alpha = Math.PI / 5;
+        //camera.beta = Math.PI / 3;
+        //camera.radius = 12;
+        //camera.attachControl(canvas, true);
+        //camera.panningAxis = new BABYLON.Vector3(0, 0, 0);
 
         // Load the model
 
+        // BABYLON.SceneLoader.ImportMesh("", "custwheels_app/model_file/model.glb", "",scene,function(meshes) {
+            BABYLON.SceneLoader.ImportMesh(
+                "",
+                "{% static 'custwheels_app/model_file/model.glb' %}",
+                "",
+                scene,
+                function (meshes) {
+                  //const meshes = result.meshes;
+                  // Find the mesh with material named "Mt_Body" and change its color to blue
+                  meshes.forEach((mesh) => {
+                    if (mesh.material && mesh.material.name === '{{responseReply.body_details.mat_name}}') {
+                      console.log("Nice");
+                        mesh.material.albedoColor = new BABYLON.Color3( {{responseReply.body_details.colorVal.0}}, {{responseReply.body_details.colorVal.1}}, {{responseReply.body_details.colorVal.2}} ); // Set the color to red
+                        //mesh.material.albedoColor = new BABYLON.Color3(0, 1, 0); // Set the color to red
+                      mesh.material.metallic = 0.67;
+                      //mesh.material.diffuseColor = new BABYLON.Color3(0.0, 1.0, 1.0); // Blue color
+                    } 
 
+                    else if (mesh.material && mesh.material.name === '{{responseReply.brake_details.mat_name}}') {
+                      console.log("Nice");
+                        mesh.material.albedoColor = new BABYLON.Color3( {{responseReply.brake_details.colorVal.0}}, {{responseReply.brake_details.colorVal.1}}, {{responseReply.brake_details.colorVal.2}} ); // Set the color to red
+                        //mesh.material.albedoColor = new BABYLON.Color3(0, 1, 0); // Set the color to red
+                      //mesh.material.metallic = 0.67;
+                      //mesh.material.diffuseColor = new BABYLON.Color3(0.0, 1.0, 1.0); // Blue color
+                    } 
+
+                    else if (mesh.material && mesh.material.name === '{{responseReply.mirror_details.mat_name}}') {
+                      console.log("Nice");
+                        mesh.material.albedoColor = new BABYLON.Color3( {{responseReply.mirror_details.colorVal.0}}, {{responseReply.mirror_details.colorVal.1}}, {{responseReply.mirror_details.colorVal.2}} ); // Set the color to red
+                        //mesh.material.albedoColor = new BABYLON.Color3(0, 1, 0); // Set the color to red
+                      //mesh.material.metallic = 0.67;
+                      //mesh.material.diffuseColor = new BABYLON.Color3(0.0, 1.0, 1.0); // Blue color
+                    } 
+                    //"Obj_Rim_T0B_FL_primitive0"
+
+                    else if (mesh.material && mesh.material.name === '{{responseReply.wheel_details.mat_name}}') {
+                        console.log({{responseReply.wheel_details.wheeltype}});
+                        mesh.material.albedoColor = new BABYLON.Color3( {{responseReply.wheel_details.colorVal.0}}, {{responseReply.wheel_details.colorVal.1}}, {{responseReply.wheel_details.colorVal.2}} ); // Set the color to red
+                        //mesh.material.albedoColor = new BABYLON.Color3(0, 1, 0); // Set the color to red
+                        mesh.material.metallic = 0;
+                       
+                        
+                      //mesh.material.diffuseColor = new BABYLON.Color3(0.0, 1.0, 1.0); // Blue color
+                    } 
+                    else if (
+                      mesh.material &&
+                      mesh.material.name === "Mt_Glass_Translucent"
+                    ) {
+                      mesh.material.metallic = 0;
+                    }
+                  });
+                }
+              );
+              scene.addLight(bigLight);
+              scene.addLight(bigLight2);
+    
+              scene.addLight(bigLight3);
+    
+              scene.addLight(bigLight4);
+              scene.addLight(bigLight5);
+
+/*
         BABYLON.SceneLoader.ImportMesh("", "{% static 'custwheels_app/model_file/model.glb' %}", "",scene,function(meshes) {
             //const meshes = result.meshes;
             // Find the mesh with material named "Mt_Body" and change its color to blue
@@ -187,7 +290,7 @@
                 }
             });
         });
-
+*/
         return scene;
     };
 

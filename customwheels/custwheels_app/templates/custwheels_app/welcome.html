@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
+    {% load static %}
+
     <!-- CDNs -->
     <!-- tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -15,15 +17,21 @@
         @keyframes changeColor {
           0% { color: #a80f5e; }
           25% { color: #0fa82e; }
-          50% { color: #0f167a; }
-          75% { color: #6f0f7a; }
-          100% { color: #7a780f; }
+          50% { color: #2a33a7; }
+          75% { color: #ae15bf; }
+          100% { color: #c9c74a; }
         }
     
         span {
           display: inline-block;
           animation: changeColor 5s infinite; /* Adjust the duration as needed */
         }
+        body {
+            background-image: url('{% static 'custwheels_app\setup\race-car.gif' %}');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+          }
       </style>
     
     <title>Custom Wheels</title>
@@ -31,11 +39,14 @@
 <body class="bg-black">
     
     <!-- Navbar -->
-    <section class="grid grid-cols-6 h-12 text-white hover:text-gray-500">
+    <section class="bg-black grid grid-cols-6 h-12 text-white hover:text-gray-500">
         <a href="/" class=" font-sans text-2xl  mx-auto py-2">Custom Wheels</a>
+        <div></div>
+        <div></div>
+        <div></div>
         
-        <div class="flex col-span-2">
-            {% if user.is_authenticated %}
+        {% if user.is_authenticated %}
+            <div class="flex col-span-2">
                 <a href="{% url 'select_model' %}" class="h-16">
                     <div
                         class="text-xl py-3 px-10 h-12 text-center hover:text-white hover:underline hover:underline-offset-8"
@@ -51,27 +62,28 @@
                         <i class="fa-solid fa-right-from-bracket ml-2"></i>
                     </div>
                 </a>
-            {% else %}
-                <div></div>
-                <div></div>
-                <a href="{% url 'user_login' %}">
-                <div
-                    class="text-xl py-1 h-12 font-bold text-center text-green-500 hover:text-green-900 hover:bg-green-100"
-                >
-                    <i class="fa-solid fa-user"></i> Login
-                </div>
-                </a>
-            {% endif %}
-        </div>
+            </div>
+
+        {% else %}
+            <div></div>
+            <a href="{% url 'user_login' %}">
+            <div
+                class="text-xl py-1 h-12 font-bold text-center hover:text-white hover:underline hover:underline-offset-8"
+            >
+                <i class="fa-solid fa-user"></i> Login
+            </div>
+            </a>
+        {% endif %}
 
     </section>
 
     <!-- Hero -->
     <section class="px-10 py-10">
-        <div class="px-10 text-white text-[100px]">
-            Welcome to <br>
-            the <span id="gradientText">Formless</span> <br>
-            Dream Car Builder
+        <div class="pt-20 font-mono text-white font-bold text-[100px]">
+            Begin Your <br>
+            <span id="gradientText">Dream Car Builder</span> <br>
+            Journey with Us
+            
         </div>
     </section>
 

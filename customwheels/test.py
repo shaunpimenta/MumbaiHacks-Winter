@@ -30,3 +30,7 @@ if "tire" in input_text:
     print("yes")
 else:
     print("no")
+
+
+
+                    else if (mesh.material && mesh.material.name === '{{responseReply.wheel_details.mat_name}}') {

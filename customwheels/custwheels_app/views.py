@@ -34,8 +34,7 @@ tempMaterialType = ""
 # Create your views here.
 def index(request):
     # return HttpResponse('Teamzeffort    |      business Page')
-    global chatList
-    chatList = []
+
     return render(request,'custwheels_app/welcome.html')
 
 def select_model(request):
@@ -101,6 +100,42 @@ def only_color_func(color_name):
     random_number = random.randint(0, len(only_color))
     return only_color[random_number]
 
+def SimpleReplay():
+    myList = [
+        "That's great to hear!",
+        "I'm glad the change was helpful.",
+        "If you have any more questions, feel free to ask.",
+        "Awesome! Let me know if there's anything else I can do for you.",
+        "Changes are always a part of progress.",
+        "If you need further assistance, don't hesitate to reach out.",
+        "Keep up the good work!",
+        "Feel free to explore more features and functionalities.",
+        "Your feedback is valuable; let me know if there's anything specific you'd like assistance with.",
+        "Wishing you a fantastic day!",
+
+        "Every step forward is a step toward success.",
+        "You're doing great! Keep it up.",
+        "If you encounter any challenges, I'm here to help.",
+        "Progress is the result of effort and persistence.",
+        "Your positive attitude is inspiring!",
+        "Remember, every expert was once a beginner.",
+        "Don't hesitate to celebrate small victories along the way.",
+        "Learning is a journey; enjoy the process.",
+        "Keep the momentum going!",
+        "Your curiosity and engagement are commendable.",
+        "Challenges are opportunities in disguise.",
+        "Your commitment to improvement is admirable.",
+        "It's okay to take breaks and recharge when needed.",
+        "Mistakes are part of the learning process—embrace them.",
+        "If there's a specific topic you're interested in, let me know!",
+        "Consistency is key—keep going!",
+        "The journey of a thousand miles begins with a single step.",
+        "Your dedication to growth is commendable.",
+        "Learning is a lifelong adventure.",
+        "Your efforts are making a difference; keep pushing forward!",
+    ]
+    random_number = random.randint(0, len(myList))
+    return myList[random_number]
 
 @login_required
 @csrf_exempt  # To disable CSRF protection (not recommended for production)
@@ -115,37 +150,47 @@ def chat_view(request):
 
         if input_text == "-h" or input_text == "help" or input_text == "--help":
             print("Help: Your help message here")
-            __Reply = help_info()
+            text__Reply = help_info()
         
         else:
-            __Reply = filtertext(input_text)
-            if __Reply['__part_name_check']:
-                tempMaterial = __Reply['Part_Names']
+            text__Reply = filtertext(input_text)
+            if text__Reply['__part_name_check']:
+                tempMaterial = text__Reply['Part_Names']
             else:
-                if __Reply['__color_name_check']:
-                    __Reply = only_color_func(__Reply['Color_Names'])    
+                if text__Reply['__color_name_check']:
+                    text_T_Reply = only_color_func(text__Reply['Color_Names'])  
+                else:
+                    text_T_Reply = 'none'  
 
-            if __Reply['__color_name_check']:
-                tempColor = __Reply['Color_Names']
+            if text__Reply['__color_name_check']:
+                tempColor = text__Reply['Color_Names']
             else:
-                if __Reply['__part_name_check']:
-                    __Reply = only_material_func(__Reply['Part_Names'])
+                if text__Reply['__part_name_check']:
+                    text_T_Reply = only_material_func(text__Reply['Part_Names'])
+                else:
+                    text_T_Reply = 'none'  
+
 
             
 
         global chatList
         chatList.append(input_text)
-        chatList.append(__Reply)
+        # chatList.append(text__Reply)
+
+        chatList.append(SimpleReplay())
 
         # params = {"chatList" : input_text}
         params = {
             "chatList" : chatList,
+            "responseReply" : text__Reply,
             # "light_diffuse" : light_diffuse
             }
     return render(request,'custwheels_app/customemodel.html', params)
 '''
 you have selected material body do you want to change material type or color 
 you have selected orange color do you want to apply it on material 
+
+your change has been applied
 
     data = {
         "Input_Text" : input_text,
@@ -198,12 +243,22 @@ typesMaterials = {
     # "bonnet": "spoiler"
     }
 
-part_names = ["wheels", "wheel", "tires", "tire", "light", "exhaust","glass", "dashboard", "body", "spoiler", "spoilers", "wing", "lighting", "lights"]
+# part_names = ["wheels", "wheel", "tires", "tire","alloy", "light", "exhaust","glass", "dashboard", "body", "spoiler", "spoilers", "wing", "lighting", "lights"]
+part_names = ["wheels", "wheel", "tires", "tire","alloy", "body", "brake caliper", "mirror"]
 
 colors = ["red", "black", "blue", "green", "white", "silver", "yellow", "purple", "orange", "gray", "pink", "brown", "turquoise", "gold", "maroon", "lavender", "teal", "cyan", "indigo", "violet"]
 
+bodycolorVal  = [1,0,0]
+brakecolorVal  = [1,0,0]
+mirrorcolorVal  = [1,0,0]
+wheelcolorVal  = [0,0,0]
 
 def filtertext(input_text):
+    global bodycolorVal
+    global brakecolorVal
+    global mirrorcolorVal
+    global wheelcolorVal
+
     # Function to remove stop words from a chat
     def remove_stop_words(chat):
         doc = nlp(chat)
@@ -271,6 +326,25 @@ def filtertext(input_text):
     else:
         color_value = "none"
 
+    bodypart_names = [ "body", "wrapper", "cover"]
+    brakepart_names = [ "brake", "brake caliper", "mirror"]
+    mirrorpart_names = [ "window flim", "window", "mirror"]
+    wheelpart_names = ["wheels", "wheel", "tires", "tire","alloy"]
+
+
+
+    if parts_found in bodypart_names:
+        bodycolorVal  = color_value
+
+    if parts_found in brakepart_names:
+        brakecolorVal  = color_value
+
+    if parts_found in mirrorpart_names:
+        mirrorcolorVal  = color_value
+
+    if parts_found in wheelpart_names:
+        wheelcolorVal  = color_value
+
     data = {
         "Input_Text" : input_text,
 
@@ -279,6 +353,12 @@ def filtertext(input_text):
         
         "Part_Names" : parts_found,
         "Color_Names" : colors_found,
+
+        "body_details" : {"mat_name": "Mt_Body", "colorVal" : bodycolorVal},
+        "brake_details" : {"mat_name": "Mt_BrakeCaliper", "colorVal" : brakecolorVal},
+        "mirror_details" : {"mat_name": "Mt_MirrorCover", "colorVal" : mirrorcolorVal},
+        "wheel_details" : {"mat_name": "Mt_AlloyWheels", "colorVal" : wheelcolorVal},
+
 
         "color_value" : color_value,
     }

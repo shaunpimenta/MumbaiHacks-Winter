@@ -14,43 +14,48 @@
     
     <title>Custom Wheels</title>
 </head>
-<body>
+<body class="bg-black">
     <!-- Navbar -->
-    <section class="grid grid-cols-6 h-12 border">
-        <a href="/" class=" font-mono font-bold text-3xl text-green-800 mx-auto py-2"><i>Custom Wheels</i></a>
+    <section class="grid grid-cols-6 h-12 text-white hover:text-gray-500">
+        <a href="/" class=" font-sans text-2xl  mx-auto py-2">Custom Wheels</a>
         <div></div>
         <div></div>
+        <div></div>
+        
         {% if user.is_authenticated %}
-            <a href="{% url 'select_model' %}" class="h-16 ">
-                <div
-                    class="text-xl py-3 h-12 font-bold text-center text-green-500 hover:text-green-900 hover:bg-green-100"
-                >
-                    Select Model
-                </div>
-            </a>
-            <a href="{% url 'user_logout' %}" class="col-span-2">
-                <div
-                    class="text-xl py-3 h-12 font-bold text-center text-green-500 hover:text-green-900 hover:bg-green-100"
-                >
-                    <i class="fa-solid fa-user"></i> {{ user.username }}
-                    <i class="fa-solid fa-right-from-bracket ml-2"></i>
-                </div>
-            </a>
+            <div class="flex col-span-2">
+                <a href="{% url 'select_model' %}" class="h-16">
+                    <div
+                        class="text-xl py-3 px-10 h-12 text-center hover:text-white hover:underline hover:underline-offset-8"
+                    >
+                        Select Model
+                    </div>
+                </a>
+                <a href="{% url 'user_logout' %}" class="">
+                    <div
+                        class="text-xl py-3 px-10 h-12 text-center hover:text-white hover:underline hover:underline-offset-8"
+                    >
+                        <i class="fa-solid fa-user"></i> {{ user.username }}
+                        <i class="fa-solid fa-right-from-bracket ml-2"></i>
+                    </div>
+                </a>
+            </div>
+
         {% else %}
-            <div></div>
             <div></div>
             <a href="{% url 'user_login' %}">
             <div
-                class="text-xl py-1 h-12 font-bold text-center text-green-500 hover:text-green-900 hover:bg-green-100"
+                class="text-xl py-1 h-12 font-bold text-center hover:text-white hover:underline hover:underline-offset-8"
             >
                 <i class="fa-solid fa-user"></i> Login
             </div>
             </a>
         {% endif %}
+
     </section>
 
     <!-- Hero -->
-    <section class="px-10">
+    <section class="px-10 text-gray-200 mt-[220px]">
         <div class="grid grid-cols-2 gap-10 my-10">
             <a href="{% url 'customemodel' %}" class="border rounded-xl shadow-sm hover:shadow-xl">
                 <div class="p-20 text-2xl font-bold text-center">Car Model</div>

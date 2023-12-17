@@ -13,6 +13,9 @@ from django.contrib.auth.decorators import login_required
 import spacy
 nlp = spacy.load("en_core_web_sm")# Load the spaCy model with NER component
 
+import os
+
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 import re
 # import nltk
 # from nltk.stem import PorterStemmer
@@ -24,6 +27,9 @@ import re
 
 chatList = []
 
+tempMaterial = ""
+tempColor = ""
+tempMaterialType = ""
 
 # Create your views here.
 def index(request):
@@ -63,6 +69,28 @@ def test(request):
 # def help(request):
 #     return render(request,'custwheels_app/help.html')
 
+only_material = [
+    "It looks like you've chosen the material for the body. Would you like to explore different material types or change the color?",
+
+    "Great choice on the material for the body! Are you interested in checking out other material options or perhaps adjusting the color?",
+
+    "You've selected a material for the body. Would you like to see more material types or experiment with different colors?",
+
+    "The body material is set! Are you interested in exploring other material options or altering the color to see how it complements your design?",
+
+    "You've made a selection for the body material. Do you want to continue with this choice or maybe try a different material type or color?",
+
+    "The material for the body has been chosen. Would you like to review other material types or tweak the color to achieve your desired look?",
+
+    "It seems you've settled on a material for the body. If you're interested, we can explore other material options or adjust the color to match your preferences.",
+
+    "You've chosen a material for the body. Do you want to stick with this choice, or shall we explore different materials and colors to enhance your design?",
+
+    "You've specified the material for the body. Would you like to experiment with different material types or modify the color to achieve the perfect aesthetic?",
+
+    "The body material has been selected. Are you satisfied with your choice, or would you like to explore different materials and colors to fine-tune your design?",
+]
+
 @login_required
 @csrf_exempt  # To disable CSRF protection (not recommended for production)
 def chat_view(request):
@@ -76,6 +104,13 @@ def chat_view(request):
         
         else:
             __Reply = filtertext(input_text)
+            if __Reply['__part_name_check']:
+                tempMaterial = __Reply['Part_Names']
+
+            if __Reply['__color_name_check']:
+                tempColor = __Reply['Color_Names']
+
+            
 
         global chatList
         chatList.append(input_text)
@@ -87,7 +122,21 @@ def chat_view(request):
             # "light_diffuse" : light_diffuse
             }
     return render(request,'custwheels_app/customemodel.html', params)
+'''
+you have selected material body do you want to change material type or color 
 
+    data = {
+        "Input_Text" : input_text,
+
+        "__part_name_check" : checks_value['__part_name'],
+        "__color_name_check" : checks_value['__color_name'],
+        
+        "Part_Names" : parts_found,
+        "Color_Names" : colors_found,
+
+        "color_value" : color_value,
+    }
+'''
 
 # ---------------------------------------------------------------------------
 # Custom Funtions
@@ -155,16 +204,19 @@ def filtertext(input_text):
         return chat_without_symbols
     
     def checkActions(processed_text):
+        print("checkActions: ", processed_text)
+        __part_name = False
+        __color_name = False
         for item in part_names:
+            print("checks_value: ", item, processed_text)
             if item in processed_text:
                 __part_name = True
-            else:
-                __part_name = False
+            
         for item in colors:
+            print("checks_value: ", item, processed_text)
             if item in processed_text:
                 __color_name = True
-            else:
-                __color_name = False
+            
         retValue = {
             "__color_name" : __color_name,
             "__part_name" : __part_name,
@@ -177,11 +229,17 @@ def filtertext(input_text):
 
     # Apply all text processing steps to the input_text
     processed_text = remove_stop_words(input_text)
+    print("remove_stop_words: ", processed_text)
+
     processed_text = lemmatize_chat(processed_text)
+    print("lemmatize_chat: ", processed_text)
     processed_text = make_chat_lowercase(processed_text)
+    print("make_chat_lowercase: ", processed_text)
     processed_text = remove_symbols(processed_text)
+    print("remove_symbols: ", processed_text)
 
     checks_value = checkActions(processed_text)
+    print("checks_value: ", checks_value)
 
     # Extract color and part name from the input_text
     colors_found, parts_found = extract_color_and_part_from_text(processed_text, checks_value) 

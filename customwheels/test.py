@@ -22,7 +22,11 @@ def find_part_match(input_text, part_names):
 
 # Example usage:
 input_text = "I have a tire and a spoiler on my car."
-part_names = ["tire", "spoiler", "bonnet"]
+# part_names = ["tire", "spoiler", "bonnet"]
 
-result = find_part_match(input_text, part_names)
-print(result)
+# result = find_part_match(input_text, part_names)
+# print(result)
+if "tire" in input_text:
+    print("yes")
+else:
+    print("no")

@@ -53,14 +53,14 @@
                             
                                 {% for chat_item in chatList %}
                                     {% if forloop.counter|divisibleby:2 %}
-                                        <div class="text-gray-800 bg-gray-100 p-2 mr-4 rounded-xl">{{ chat_item|safe }}</div> 
+                                        <div class="text-gray-800 bg-gray-100 p-2 mr-4 rounded-xl">Bot: {{ chat_item|safe }}</div> 
                                     {% else %}
                                         <div class="text-gray-500 mr-6 my-2">{{ chat_item }}</div>
                                     {% endif %}
 
                                     {% if forloop.last %}
                                         <script>
-                                            const lastChatItem = document.getElementById("chat-item-{{ forloop.counter }}");
+                                            const lastChatItem = document.getElementById("chat-item-container");
                                             const words = lastChatItem.textContent.split(" ");
                                             
                                             // Clear the original content

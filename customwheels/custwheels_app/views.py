@@ -23,7 +23,7 @@ import re
 
 # from django.http import HttpResponse
 # from .models import Product, Contact
-# import random
+import random
 
 chatList = []
 
@@ -68,32 +68,47 @@ def test(request):
 
 # def help(request):
 #     return render(request,'custwheels_app/help.html')
+def only_material_func(part_name):
+    only_material = [
+        f"You've chosen the {part_name}. Would you like to explore different designs or change the color?",
+        f"Are you interested in adjusting the {part_name} or selecting a new color?",
+        f"Great choice with the {part_name}! Want to tweak the design or maybe go for a different color?",
+        f"You've picked the {part_name} part. Interested in altering the {part_name} or experimenting with colors?",
+        f"You're working on the {part_name}. Want to customize the {part_name} type or perhaps go for a new color?",
+        f"Selected the {part_name}. Would you like to change the {part_name} type or explore different color options?",
+        f"You've focused on the {part_name}. Want to switch up the {part_name} or try out a different color scheme?",
+        f"Currently customizing the {part_name}. Are you interested in changing the {part_name} or opting for a new color?",
+        f"You've chosen the {part_name}. Would you like to experiment with different {part_name} or change the color?",
+        f"Working on the {part_name}. Interested in adjusting the {part_name} or selecting a new tint color?",
+    ]
+    random_number = random.randint(0, len(only_material))
+    return only_material[random_number]
 
-only_material = [
-    "It looks like you've chosen the material for the body. Would you like to explore different material types or change the color?",
+def only_color_func(color_name):
+    global tempMaterial
+    only_color = [
+        f"You've chosen a vibrant {color_name} color! Would you like to apply it to the {tempMaterial} as well?",
+        f"Great choice with {color_name}! Want to see how it looks when applied to the {tempMaterial}?",
+        f"{color_name} is a bold color! Would you like to see it on the {tempMaterial} too?",
+        f"You've picked {color_name}. How about applying it to the {tempMaterial} for a cohesive look?",
+        f"{color_name} is stunning! Interested in applying it to the {tempMaterial} for a unified design?",
+        f"You've selected an eye-catching {color_name}. Want to apply it to the {tempMaterial} as well?",
+        f"{color_name} is a fantastic choice! How about applying it to the {tempMaterial} for a seamless finish?",
+        f"Bold move with {color_name}! Would you like to extend it to the {tempMaterial} for consistency?",
+        f"You've chosen {color_name}. Want to see how it complements the {tempMaterial} of your choice?",
+        f"{color_name} is a vibrant option! Ready to apply it to the {tempMaterial} for a customized touch?",
+    ]
+    random_number = random.randint(0, len(only_color))
+    return only_color[random_number]
 
-    "Great choice on the material for the body! Are you interested in checking out other material options or perhaps adjusting the color?",
-
-    "You've selected a material for the body. Would you like to see more material types or experiment with different colors?",
-
-    "The body material is set! Are you interested in exploring other material options or altering the color to see how it complements your design?",
-
-    "You've made a selection for the body material. Do you want to continue with this choice or maybe try a different material type or color?",
-
-    "The material for the body has been chosen. Would you like to review other material types or tweak the color to achieve your desired look?",
-
-    "It seems you've settled on a material for the body. If you're interested, we can explore other material options or adjust the color to match your preferences.",
-
-    "You've chosen a material for the body. Do you want to stick with this choice, or shall we explore different materials and colors to enhance your design?",
-
-    "You've specified the material for the body. Would you like to experiment with different material types or modify the color to achieve the perfect aesthetic?",
-
-    "The body material has been selected. Are you satisfied with your choice, or would you like to explore different materials and colors to fine-tune your design?",
-]
 
 @login_required
 @csrf_exempt  # To disable CSRF protection (not recommended for production)
 def chat_view(request):
+    global tempMaterial
+    global tempColor
+    global tempMaterialType
+
     if request.method == 'POST':
         input_text = request.POST.get('input_text', '')  # Get the input field value
         print(f"Received input: {input_text}")  # Print the input in the terminal
@@ -106,9 +121,15 @@ def chat_view(request):
             __Reply = filtertext(input_text)
             if __Reply['__part_name_check']:
                 tempMaterial = __Reply['Part_Names']
+            else:
+                if __Reply['__color_name_check']:
+                    __Reply = only_color_func(__Reply['Color_Names'])    
 
             if __Reply['__color_name_check']:
                 tempColor = __Reply['Color_Names']
+            else:
+                if __Reply['__part_name_check']:
+                    __Reply = only_material_func(__Reply['Part_Names'])
 
             
 
@@ -124,6 +145,7 @@ def chat_view(request):
     return render(request,'custwheels_app/customemodel.html', params)
 '''
 you have selected material body do you want to change material type or color 
+you have selected orange color do you want to apply it on material 
 
     data = {
         "Input_Text" : input_text,
@@ -204,16 +226,16 @@ def filtertext(input_text):
         return chat_without_symbols
     
     def checkActions(processed_text):
-        print("checkActions: ", processed_text)
+        # print("checkActions: ", processed_text)
         __part_name = False
         __color_name = False
         for item in part_names:
-            print("checks_value: ", item, processed_text)
+            # print("checks_value: ", item, processed_text)
             if item in processed_text:
                 __part_name = True
             
         for item in colors:
-            print("checks_value: ", item, processed_text)
+            # print("checks_value: ", item, processed_text)
             if item in processed_text:
                 __color_name = True
             
@@ -229,17 +251,17 @@ def filtertext(input_text):
 
     # Apply all text processing steps to the input_text
     processed_text = remove_stop_words(input_text)
-    print("remove_stop_words: ", processed_text)
+    # print("remove_stop_words: ", processed_text)
 
     processed_text = lemmatize_chat(processed_text)
-    print("lemmatize_chat: ", processed_text)
+    # print("lemmatize_chat: ", processed_text)
     processed_text = make_chat_lowercase(processed_text)
-    print("make_chat_lowercase: ", processed_text)
+    # print("make_chat_lowercase: ", processed_text)
     processed_text = remove_symbols(processed_text)
-    print("remove_symbols: ", processed_text)
+    # print("remove_symbols: ", processed_text)
 
     checks_value = checkActions(processed_text)
-    print("checks_value: ", checks_value)
+    # print("checks_value: ", checks_value)
 
     # Extract color and part name from the input_text
     colors_found, parts_found = extract_color_and_part_from_text(processed_text, checks_value) 
@@ -256,7 +278,7 @@ def filtertext(input_text):
         "__color_name_check" : checks_value['__color_name'],
         
         "Part_Names" : parts_found,
-        "Colors" : colors_found,
+        "Color_Names" : colors_found,
 
         "color_value" : color_value,
     }
@@ -311,7 +333,7 @@ def map_color_to_mtl(color_name):
 
     if color_name in colors:
         color_values = colors[color_name]
-        print("mtl - color_name : ", color_name)
+        # print("mtl - color_name : ", color_name)
         return color_values
     else:
         default = [0.0, 0.0, 0.0, 1.0]

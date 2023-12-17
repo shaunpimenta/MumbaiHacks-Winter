@@ -1,7 +1,27 @@
 {% extends 'custwheels_app/base.html' %} {% block title %}CustomWheelz | Home{% endblock %}
 
 {% block css %}
-    
+    #chat-container {
+        height: 27rem;
+        overflow-y: auto;
+        scrollbar-width: thin; /* Firefox */
+        scrollbar-color: #ccc #f0f0f0; /* Firefox */
+
+        /* Webkit (Chrome, Safari) */
+        &::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background-color: #ccc;
+        }
+
+        &::-webkit-scrollbar-track {
+            background-color: #f0f0f0;
+        }
+    }
+
+    /* Add your other styles here */
 {% endblock %}
 
 <div>{% block content %} {% load static %}</div>
@@ -21,21 +41,63 @@
 
                     <div class="flex justify-center full">
                         <div class="px-4 py-4 w-11/12  content-center h-[36rem] border rounded-xl shadow-2xl">
-                            <div class="text-green-600 text-center text-xl font-bold font-mono mb-1">Formless Chat</div>
+                            <div class="text-green-600 text-center text-xl font-bold font-mono mb-1">Formless Chat
+                                <!-- <a href=""><i class="fa-solid fa-trash-can ml-10 hover:text-green-800"></i></a> -->
+                            </div>
                             <!-- <div class="text-gray-300 text-md font-bold col-span-3 h-[27rem]"> -->
 
-                            <div class="text-gray-500 text-md font-bold col-span-3 h-[27rem] overflow-y-auto mb-2 text-justify ">
+                            <div class="text-gray-500 text-md col-span-3 h-[27rem] overflow-y-auto mb-2 text-justify" id="chat-container">
 
-                            <div>Welcome to CustomWheelz with formless tech, lets design your Dream Car...</div>
-
-                            {% for chat_item in chatList %}
-                                <div>{{ chat_item }}</div>
-                            {% endfor %}
-
-                                 
-                            </div>
+                                <div class="mx-4">Welcome to CustomWheelz with formless tech, let's design your Dream Car...</div>
                             
-                            <div class="h-10 ">
+                            
+                                {% for chat_item in chatList %}
+                                    {% if forloop.counter|divisibleby:2 %}
+                                        <div class="text-gray-800 bg-gray-100 p-2 mr-4 rounded-xl">{{ chat_item|safe }}</div> 
+                                    {% else %}
+                                        <div class="text-gray-500 mr-6 my-2">{{ chat_item }}</div>
+                                    {% endif %}
+
+                                    {% if forloop.last %}
+                                        <script>
+                                            const lastChatItem = document.getElementById("chat-item-{{ forloop.counter }}");
+                                            const words = lastChatItem.textContent.split(" ");
+                                            
+                                            // Clear the original content
+                                            lastChatItem.innerHTML = "";
+                                            
+                                            // Function to render words with delay
+                                            function renderWordsWithDelay(index) {
+                                                if (index < words.length) {
+                                                    setTimeout(function () {
+                                                        if (words[index] === ".") {
+                                                            lastChatItem.innerHTML += "<br>";
+                                                        } else {
+                                                            lastChatItem.innerHTML += words[index] + " ";
+                                                        }
+                                            
+                                                        renderWordsWithDelay(index + 1);
+                                            
+                                                    }, 100);  // 0.10 seconds delay
+                                                } else {
+                                                    // Auto-scroll to the bottom after the last word
+                                                    const chatContainer = document.getElementById("chat-container");
+                                                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                                                }
+                                            }
+                                            
+                                            // Start rendering words with delay
+                                            renderWordsWithDelay(0);
+                                        </script>
+                                    {% endif %}
+                                {% endfor %}
+
+                                
+                            
+                            </div>
+                                
+                            
+                            <div class="h-10 mr-2">
                                 <!-- <input class="mt-10 text-white bg-none text-2xl" type="text" placeholder="Type Here..."> -->
                                 <form method="post" action="{% url 'chat_view' %}">
                                     {% csrf_token %}
